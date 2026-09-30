@@ -1,0 +1,4 @@
+-- Index pour accélérer les recherches par province/section et par nom
+CREATE INDEX IF NOT EXISTS idx_croyants_province_section ON croyants (province, section);
+CREATE INDEX IF NOT EXISTS idx_croyants_nom ON croyants (nom);
+CREATE INDEX IF NOT EXISTS idx_medias_type ON medias (type);
