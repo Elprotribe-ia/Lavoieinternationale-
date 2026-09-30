@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "la-voie-internationale",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-29",
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    // Le Worker n'est appelé que pour l'API ; les fichiers statiques sont servis directement (plus rapide et gratuit).
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "la-voie-internationale-db",
+      "database_id": "00000002-00000000-000050f5-8e50e8a8092274d5bd23906ff36b6fe5",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
