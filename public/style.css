@@ -61,3 +61,61 @@ button { cursor: pointer; }
   color: #fff;
   font-weight: 800;
 }
+/* En-tête */
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--green-700);
+  color: #fff;
+  padding: calc(15px + var(--safe-top)) 15px 15px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.top button { background: none; border: 0; color: #fff; font-size: 24px; min-width: 44px; min-height: 44px; }
+.top h2 { margin: 0; font-size: 19px; }
+
+.content { padding: 16px 16px calc(85px + var(--safe-bottom)); }
+
+/* Cartes */
+.hello, .card, .stat {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 15px;
+  box-shadow: 0 5px 16px rgb(10 92 43 / 6%);
+}
+.hello { background: linear-gradient(135deg, var(--green-700), var(--green-500)); color: #fff; }
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.stat b { display: block; font-size: 23px; color: var(--green-700); }
+
+.quick, .list { display: grid; gap: 10px; }
+.quick { grid-template-columns: repeat(3, 1fr); }
+
+.quick button, .section-btn {
+  background: #fff;
+  border: 1px solid #cfe8da;
+  border-radius: 14px;
+  padding: 13px 5px;
+  color: var(--green-700);
+  font-weight: 700;
+}
+
+.search {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #d7e9df;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.province { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sections { display: flex; gap: 6px; }
+.pill { border: 0; background: var(--green-500); color: #fff; border-radius: 18px; padding: 10px 12px; font-size: 12px; }
+
+.muted { color: var(--muted); font-size: 13px; }
+
+.form { display: grid; gap: 10px; }
+.form input, .form select { padding: 13px; border: 1px solid #cfe4d7; border-radius: 12px; background: #fff; }
