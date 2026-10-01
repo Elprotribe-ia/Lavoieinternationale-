@@ -7,14 +7,13 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    // Le Worker n'est appelé que pour l'API ; les fichiers statiques sont servis directement (plus rapide et gratuit).
     "run_worker_first": ["/api/*"]
   },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "la-voie-internationale-db",
-      "database_id": "00000002-00000000-000050f5-8e50e8a8092274d5bd23906ff36b6fe5",
+      "database_id": "3267a0d9-6dbd-44c5-89ca-f6c05c4afa7b",
       "migrations_dir": "migrations"
     }
   ]
