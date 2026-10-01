@@ -28,3 +28,34 @@ async function checkKey(request, env) {
   for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
   return diff === 0;
 }
+function clean(table, body) {
+  const out = {};
+  for (const col of table.cols) {
+    const value = body && typeof body[col] === 'string' ? body[col].trim() : '';
+    if (value.length > 200) return { error: `Texte trop long : ${col}` };
+    if (!value && table.req.includes(col)) return { error: `Champ obligatoire : ${col}` };
+    if (value && table.enums[col] && !table.enums[col].includes(value)) return { error: `Valeur invalide : ${col}` };
+    out[col] = value || null;
+  }
+  if (out.url && !/^https?:\/\//i.test(out.url)) return { error: 'Le lien doit commencer par http:// ou https://' };
+  return { out };
+}
+
+async function handleApi(request, env, url) {
+  const [, name, id] = url.pathname.split('/').filter(Boolean);
+  const method = request.method;
+
+  if (name === 'health') {
+    if (method !== 'GET') return json({ ok: false, error: 'Méthode non autorisée' }, 405);
+    const body = { ok: true, app: 'La Voie Internationale' };
+    if (url.searchParams.get('db') === '1') {
+      try {
+        await env.DB.prepare('SELECT 1').first();
+        body.db = 'ok';
+      } catch (err) {
+        console.error('D1 health check failed:', err);
+        return json({ ok: false, db: 'error' }, 503);
+      }
+    }
+    return json(body);
+  }
