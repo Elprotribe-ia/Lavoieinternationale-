@@ -84,3 +84,34 @@ async function handleApi(request, env, url) {
     const { results } = await env.DB.prepare(sql).bind(...args).all();
     return json({ ok: true, items: results });
   }
+  if (method === 'POST') {
+    let body;
+    try { body = await request.json(); } catch { return json({ ok: false, error: 'Données invalides' }, 400); }
+    const { out, error } = clean(table, body);
+    if (error) return json({ ok: false, error }, 400);
+    const marks = table.cols.map(() => '?').join(', ');
+    const res = await env.DB.prepare(`INSERT INTO ${name} (${table.cols.join(', ')}) VALUES (${marks})`).bind(...table.cols.map((c) => out[c])).run();
+    return json({ ok: true, id: res.meta.last_row_id }, 201);
+  }
+
+  if (method === 'DELETE') {
+    if (!/^\d+$/.test(id || '')) return json({ ok: false, error: 'Identifiant invalide' }, 400);
+    await env.DB.prepare(`DELETE FROM ${name} WHERE id = ?`).bind(Number(id)).run();
+    return json({ ok: true });
+  }
+
+  return json({ ok: false, error: 'Méthode non autorisée' }, 405, { Allow: 'GET, POST, DELETE' });
+}
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    try {
+      if (url.pathname.startsWith('/api/')) return await handleApi(request, env, url);
+      return await env.ASSETS.fetch(request);
+    } catch (err) {
+      console.error('Unhandled error:', err);
+      return json({ ok: false, error: 'Erreur interne' }, 500);
+    }
+  },
+};
