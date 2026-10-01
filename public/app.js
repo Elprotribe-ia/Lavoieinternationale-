@@ -106,5 +106,27 @@ views.media = () => {
 </div>
 <button type="button" class="primary" data-action="teaching">+ Ajouter un média</button>`, 'm');
 };
+views.more = () => {
+  shell('Plus',
+    `<div class="list">
+<button type="button" class="section-btn" data-action="teaching">Ajouts d'enseignement</button>
+<button type="button" class="section-btn" data-action="videos">Vidéos</button>
+<button type="button" class="section-btn" data-action="media">Médias</button>
+<button type="button" class="section-btn">⚙ Paramètres</button>
+<button type="button" class="section-btn">☁ Mode hors ligne</button>
+</div>`, 'm');
+};
+app.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el || !app.contains(el)) return;
+  const { action, province, section } = el.dataset;
+  if (Object.prototype.hasOwnProperty.call(views, action)) views[action](province, section);
+});
+views.splash();
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((err) => console.warn('SW:', err));
+  });
+}
 
 
