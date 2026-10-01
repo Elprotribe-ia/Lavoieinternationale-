@@ -47,3 +47,17 @@ const sel = (n, label, pairs, val) => `<select name="${n}" aria-label="${label}"
 const form = (kind, fields) => `<div class="form" data-kind="${kind}"><h3>Ajouter</h3>${fields}<button type="button" class="primary" data-action="save">+ Ajouter</button><p class="err" role="alert"></p></div>`;
 const item = (kind, id, title, sub) => `<div class="card row item"><div><b>${esc(title)}</b><div class="muted">${sub}</div></div><button type="button" class="del" data-action="del" data-kind="${kind}" data-id="${id}" aria-label="Supprimer ${esc(title)}">✕</button></div>`;
 const page = (title, active, f, items) => shell(title, `${f}<input class="search" type="search" placeholder="Rechercher..." aria-label="Rechercher"><div class="list">${items || '<p class="muted">Aucun élément pour le moment.</p>'}</div>`, active);
+
+views.splash = () => {
+  app.innerHTML = `<section class="splash"><img src="icon-192.png" width="180" height="180" alt="Logo"><h1>La Voie Internationale</h1><div class="tag">UN PEUPLE • UNE FOI • UNE MISSION</div><div class="welcome">Bienvenue !</div><p class="desc">Études et des formations bibliques</p><button type="button" class="continue" data-action="home">Continuer →</button></section>`;
+};
+views.login = (msg) => {
+  app.innerHTML = `<section class="splash"><img src="icon-192.png" width="120" height="120" alt="Logo"><h1>Accès administrateur</h1><div class="form"><input type="password" id="key" placeholder="Code administrateur" aria-label="Code administrateur" autocomplete="current-password"><button type="button" class="continue" data-action="login">Entrer</button></div><p class="err" role="alert">${esc(msg || '')}</p></section>`;
+};
+views.home = async () => {
+  const s = await api('stats');
+  shell('La Voie Internationale', `<div class="hello"><b>Bonjour, Administrateur</b><br>Que Dieu bénisse votre journée !</div>
+<div class="stats"><div class="stat">Croyants<b>${s.croyants}</b></div><div class="stat">Provinces<b>${PROVINCES.length}</b></div><div class="stat">Comité exécutif<b>${s.dirigeants}</b></div><div class="stat">Médias<b>${s.medias}</b></div></div>
+<h3>Accès rapide</h3>
+<div class="quick"><button type="button" data-action="croyants">♙<br>Croyants</button><button type="button" data-action="provinces">⌖<br>Provinces</button><button type="button" data-action="committee">♟<br>Comité</button><button type="button" data-action="teaching">▣<br>Enseignements</button><button type="button" data-action="videos">▶<br>Vidéos</button><button type="button" data-action="media">▤<br>Médias</button></div>`, 'h');
+};
