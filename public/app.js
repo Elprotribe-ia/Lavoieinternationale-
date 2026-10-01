@@ -70,5 +70,41 @@ views.believers = () => {
     `<div class="card"><b>${esc(n)}</b><div class="muted">Province ${(i % 4) + 1} · Section ${(i % 2) + 1}</div></div>`).join('');
   shell('Registre des Croyants', `<input class="search" type="search" placeholder="Rechercher un croyant..." aria-label="Rechercher"><div class="list">${cards}</div>`, 'c');
 };
+views.committee = () => {
+  const cards = COMMITTEE.map((x) => `<div class="card"><b>${esc(x)}</b><div class="muted">Gestion manuelle</div></div>`).join('');
+  shell('Comité Exécutif', `<div class="list">${cards}</div>`, 'e');
+};
+views.teaching = () => {
+  shell("Ajouts d'enseignement",
+    `<div class="list">
+<button type="button" class="section-btn" data-action="formTeach">▣ Enseignements<br><span class="muted">Ajouter un nouvel enseignement (PDF, vidéo, etc.)</span></button>
+<button type="button" class="section-btn" data-action="videos">▶ Vidéos<br><span class="muted">Ajouter une vidéo</span></button>
+<button type="button" class="section-btn" data-action="media">▤ Médias<br><span class="muted">Ajouter une image ou un fichier</span></button>
+</div>`, 'm');
+};
+views.formTeach = () => {
+  shell('Nouvel enseignement',
+    `<div class="form">
+<input type="text" placeholder="Titre" aria-label="Titre">
+<input type="text" placeholder="Description" aria-label="Description">
+<select aria-label="Type"><option>PDF</option><option>Audio</option><option>Vidéo</option></select>
+<input type="file" aria-label="Fichier">
+<button type="button" class="primary">Enregistrer</button>
+</div>`, 'm');
+};
+views.videos = () => {
+  const cards = VIDEOS.map((x) => `<div class="card"><b>▶ ${esc(x)}</b><div class="muted">Vidéo</div></div>`).join('');
+  shell('Vidéos', `<input class="search" type="search" placeholder="Rechercher une vidéo..." aria-label="Rechercher"><div class="list">${cards}</div>`, 'm');
+};
+views.media = () => {
+  shell('Médias',
+    `<div class="stats">
+<button type="button" class="section-btn">▧ Images</button>
+<button type="button" class="section-btn">▤ Documents</button>
+<button type="button" class="section-btn">♫ Audio</button>
+<button type="button" class="section-btn">▶ Vidéos</button>
+</div>
+<button type="button" class="primary" data-action="teaching">+ Ajouter un média</button>`, 'm');
+};
 
 
