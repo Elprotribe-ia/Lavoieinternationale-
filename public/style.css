@@ -119,3 +119,34 @@ button { cursor: pointer; }
 
 .form { display: grid; gap: 10px; }
 .form input, .form select { padding: 13px; border: 1px solid #cfe4d7; border-radius: 12px; background: #fff; }
+
+/* Barre de navigation */
+.bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #d8e9df;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 8px 4px calc(8px + var(--safe-bottom));
+  z-index: 10;
+}
+.bottom button { border: 0; background: none; color: #587166; font-size: 11px; min-height: 44px; }
+.bottom .active { color: var(--green-700); font-weight: 800; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+/* Ajouts : listes éditables, formulaires, erreurs */
+[hidden] { display: none !important; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.del { border: 0; background: #fdeaea; color: #b3261e; border-radius: 10px; min-width: 44px; min-height: 44px; font-size: 16px; }
+.card a { color: var(--green-700); font-weight: 700; }
+.err { color: #b3261e; font-size: 13px; margin: 0; }
+.splash .err { color: #ffd7d7; min-height: 18px; }
+.form { margin-bottom: 14px; }
+.form h3 { margin: 0; }
+.splash .form { margin: 14px 0 6px; }
