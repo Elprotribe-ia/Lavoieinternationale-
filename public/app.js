@@ -61,3 +61,21 @@ views.home = async () => {
 <h3>Accès rapide</h3>
 <div class="quick"><button type="button" data-action="croyants">♙<br>Croyants</button><button type="button" data-action="provinces">⌖<br>Provinces</button><button type="button" data-action="committee">♟<br>Comité</button><button type="button" data-action="teaching">▣<br>Enseignements</button><button type="button" data-action="videos">▶<br>Vidéos</button><button type="button" data-action="media">▤<br>Médias</button></div>`, 'h');
 };
+views.provinces = () => {
+  const cards = PROVINCES.map((p) => `<div class="card province"><div><b>${esc(p)}</b><div class="muted">Organisation provinciale</div></div><div class="sections">${SECTIONS.map((s) =>
+    `<button type="button" class="pill" data-action="croyants" data-province="${esc(p)}" data-section="${esc(s)}">${esc(s)}</button>`).join('')}</div></div>`).join('');
+  shell('Provinces', `<div class="list">${cards}</div>`, 'p');
+};
+views.croyants = async (p, s) => {
+  const qs = new URLSearchParams();
+  if (p) qs.set('province', p);
+  if (s) qs.set('section', s);
+  const { items } = await api('croyants?' + qs);
+  const f = form('croyants', inp('nom', 'Nom complet') + sel('province', 'Province', PROVINCES.map((x) => [x, x]), p) + sel('section', 'Section', SECTIONS.map((x) => [x, x]), s));
+  page(p ? `${p} — ${s}` : 'Registre des Croyants', p ? 'p' : 'c', f, items.map((c) => item('croyants', c.id, c.nom, esc(`${c.province || '—'} · ${c.section || '—'}`))).join(''));
+};
+views.committee = async () => {
+  const { items } = await api('dirigeants');
+  const f = form('dirigeants', inp('nom', 'Nom complet') + inp('fonction', 'Fonction (à écrire toi-même)'));
+  page('Comité Exécutif', 'e', f, items.map((d) => item('dirigeants', d.id, d.nom, esc(d.fonction || 'Fonction non précisée'))).join(''));
+};
