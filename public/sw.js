@@ -1,6 +1,6 @@
 /* Service worker — La Voie Internationale
  * Incrémenter VERSION à chaque déploiement qui change les fichiers précachés. */
-const VERSION = 'lvi-v2';
+const VERSION = 'lvi-v3';
 const PRECACHE = [
   './',
   'index.html',
