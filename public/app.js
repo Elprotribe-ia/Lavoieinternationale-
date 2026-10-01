@@ -79,3 +79,15 @@ views.committee = async () => {
   const f = form('dirigeants', inp('nom', 'Nom complet') + inp('fonction', 'Fonction (à écrire toi-même)'));
   page('Comité Exécutif', 'e', f, items.map((d) => item('dirigeants', d.id, d.nom, esc(d.fonction || 'Fonction non précisée'))).join(''));
 };
+async function lib(title, type) {
+  const { items } = await api('medias' + (type ? '?type=' + type : ''));
+  const tf = type ? `<input type="hidden" name="type" value="${type}">` : sel('type', 'Type', ['image', 'document', 'audio'].map((t) => [t, LABEL[t]]));
+  const f = form('medias', inp('titre', 'Titre') + inp('url', 'Lien https:// (YouTube, Drive, PDF...)', 'url') + tf);
+  page(title, 'm', f, items.map((m) => item('medias', m.id, m.titre, esc(LABEL[m.type] || '') + (m.url ? ` · <a href="${esc(m.url)}" target="_blank" rel="noopener noreferrer">Ouvrir</a>` : ''))).join(''));
+}
+views.teaching = () => lib('Enseignements', 'enseignement');
+views.videos = () => lib('Vidéos', 'video');
+views.media = () => lib('Médias');
+views.more = () => {
+  shell('Plus', `<div class="list"><button type="button" class="section-btn" data-action="teaching">Enseignements</button><button type="button" class="section-btn" data-action="videos">Vidéos</button><button type="button" class="section-btn" data-action="media">Médias</button><button type="button" class="section-btn" data-action="logout">Verrouiller l’application</button></div>`, 'm');
+};
