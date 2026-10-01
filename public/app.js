@@ -34,3 +34,16 @@ async function go(name, ...args) {
 }
 
 const NAV = [['h', 'home', '⌂', 'Accueil'], ['c', 'croyants', '♙', 'Croyants'], ['p', 'provinces', '⌖', 'Provinces'], ['e', 'committee', '♟', 'Comité'], ['m', 'more', '•••', 'Plus']];
+
+const nav = (a) => `<nav class="bottom" aria-label="Navigation principale">${NAV.map(([id, act, ic, lb]) =>
+  `<button type="button" class="${id === a ? 'active' : ''}" data-action="${act}"><span aria-hidden="true">${ic}</span><br>${lb}</button>`).join('')}</nav>`;
+function shell(title, body, active) {
+  app.innerHTML = `<header class="top"><button type="button" data-action="home" aria-label="Accueil">‹</button><h2>${esc(title)}</h2></header><main class="content">${body}</main>${nav(active)}`;
+  window.scrollTo(0, 0);
+}
+
+const inp = (n, ph, type = 'text') => `<input type="${type}" name="${n}" placeholder="${esc(ph)}" aria-label="${esc(ph)}" maxlength="200">`;
+const sel = (n, label, pairs, val) => `<select name="${n}" aria-label="${label}">${pairs.map(([v, l]) => `<option value="${esc(v)}"${v === val ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
+const form = (kind, fields) => `<div class="form" data-kind="${kind}"><h3>Ajouter</h3>${fields}<button type="button" class="primary" data-action="save">+ Ajouter</button><p class="err" role="alert"></p></div>`;
+const item = (kind, id, title, sub) => `<div class="card row item"><div><b>${esc(title)}</b><div class="muted">${sub}</div></div><button type="button" class="del" data-action="del" data-kind="${kind}" data-id="${id}" aria-label="Supprimer ${esc(title)}">✕</button></div>`;
+const page = (title, active, f, items) => shell(title, `${f}<input class="search" type="search" placeholder="Rechercher..." aria-label="Rechercher"><div class="list">${items || '<p class="muted">Aucun élément pour le moment.</p>'}</div>`, active);
