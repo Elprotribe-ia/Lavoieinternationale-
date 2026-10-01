@@ -59,3 +59,28 @@ async function handleApi(request, env, url) {
     }
     return json(body);
   }
+  const auth = await checkKey(request, env);
+  if (auth === 'missing') return json({ ok: false, error: 'Code administrateur non configuré sur le serveur' }, 503);
+  if (!auth) return json({ ok: false, error: 'Code incorrect' }, 401);
+
+  if (name === 'stats' && method === 'GET') {
+    const rows = await env.DB.batch(['croyants', 'dirigeants', 'medias'].map((t) => env.DB.prepare(`SELECT COUNT(*) AS n FROM ${t}`)));
+    return json({ ok: true, croyants: rows[0].results[0].n, dirigeants: rows[1].results[0].n, medias: rows[2].results[0].n });
+  }
+
+  if (!Object.hasOwn(TABLES, name || '')) return json({ ok: false, error: 'Route introuvable' }, 404);
+  const table = TABLES[name];
+
+  if (method === 'GET') {
+    const where = [];
+    const args = [];
+    for (const key of Object.keys(table.enums)) {
+      const v = url.searchParams.get(key);
+      if (v) { where.push(`${key} = ?`); args.push(v); }
+    }
+    const q = url.searchParams.get('q');
+    if (q) { where.push(`${table.cols[0]} LIKE ?`); args.push(`%${q.slice(0, 100)}%`); }
+    const sql = `SELECT id, ${table.cols.join(', ')} FROM ${name}${where.length ? ' WHERE ' + where.join(' AND ') : ''} ORDER BY ${table.order} LIMIT 500`;
+    const { results } = await env.DB.prepare(sql).bind(...args).all();
+    return json({ ok: true, items: results });
+  }
