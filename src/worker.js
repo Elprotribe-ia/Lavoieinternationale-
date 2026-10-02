@@ -1,4 +1,4 @@
-/**
+Pp/**
  * La Voie au Congo — Worker
  * Fichiers statiques : servis par Workers Assets. Ici : uniquement /api/*.
  * Les routes de données exigent le secret ADMIN_KEY (en-tête X-Admin-Key).
@@ -109,7 +109,10 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     try {
-      if (url.pathname.startsWith('/api/')) return await handleApi(request, env, url);
+      if (url.pathname.startsWith('/api/')) {
+        if (env.DB) await ensureSchema(env);
+        return await handleApi(request, env, url);
+      }
       return await env.ASSETS.fetch(request);
     } catch (err) {
       console.error('Unhandled error:', err);
