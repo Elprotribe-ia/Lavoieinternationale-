@@ -1,4 +1,4 @@
-Pp/**
+/**
  * La Voie au Congo — Worker
  * Fichiers statiques : servis par Workers Assets. Ici : uniquement /api/*.
  * Les routes de données exigent le secret ADMIN_KEY (en-tête X-Admin-Key).
@@ -120,3 +120,17 @@ export default {
     }
   },
 };
+// Prépare la base automatiquement : crée les tables et ajoute les colonnes manquantes.
+let schemaReady = false;
+async function ensureSchema(env) {
+  if (schemaReady) return;
+  for (const [name, t] of Object.entries(TABLES)) {
+    await env.DB.prepare(`CREATE TABLE IF NOT EXISTS ${name} (id INTEGER PRIMARY KEY AUTOINCREMENT, ${t.cols[0]} TEXT)`).run();
+    const { results } = await env.DB.prepare(`PRAGMA table_info(${name})`).all();
+    const have = new Set(results.map((r) => r.name));
+    for (const col of t.cols) {
+      if (!have.has(col)) await env.DB.prepare(`ALTER TABLE ${name} ADD COLUMN ${col} TEXT`).run();
+    }
+  }
+  schemaReady = true;
+}
