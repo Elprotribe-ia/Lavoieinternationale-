@@ -150,3 +150,8 @@ button { cursor: pointer; }
 .form { margin-bottom: 14px; }
 .form h3 { margin: 0; }
 .splash .form { margin: 14px 0 6px; }
+
+/* Profil du croyant */
+.who { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex: none; background: #e3f1e8; color: var(--green-700); font-weight: 800; font-size: 22px; display: grid; place-items: center; }
+.preview { width: 80px; height: 80px; }
