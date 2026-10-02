@@ -115,3 +115,57 @@ function photoFrom(file) {
     fr.readAsDataURL(file);
   });
 }
+async function save(el) {
+  const f = el.closest('.form');
+  const body = {};
+  f.querySelectorAll('[name]').forEach((i) => { body[i.name] = i.value; });
+  const err = f.querySelector('.err');
+  err.textContent = '';
+  el.disabled = true;
+  try { await api(f.dataset.kind, 'POST', body); await go(...current); } catch (e) {
+    if (e.message !== 'auth') { err.textContent = e.message; el.disabled = false; }
+  }
+}
+async function del(el) {
+  if (!window.confirm('Supprimer cet élément ?')) return;
+  try { await api(`${el.dataset.kind}/${el.dataset.id}`, 'DELETE'); await go(...current); } catch (e) { /* géré par api() */ }
+}
+
+app.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el || !app.contains(el)) return;
+  const { action, province, section } = el.dataset;
+  if (action === 'save') return save(el);
+  if (action === 'del') return del(el);
+  if (action === 'logout') { setKey(''); return views.login(); }
+  if (action === 'login') {
+    const v = (document.getElementById('key').value || '').trim();
+    if (!v) return;
+    setKey(v);
+    return go('home');
+  }
+  if (Object.prototype.hasOwnProperty.call(views, action)) go(action, province, section);
+});
+app.addEventListener('change', async (e) => {
+  if (e.target.id !== 'photo-file' || !e.target.files[0]) return;
+  const f = e.target.closest('.form');
+  try {
+    const data = await photoFrom(e.target.files[0]);
+    f.querySelector('[name=photo]').value = data;
+    const pv = f.querySelector('.preview');
+    pv.src = data;
+    pv.hidden = false;
+  } catch (x) { f.querySelector('.err').textContent = x.message; }
+});
+app.addEventListener('input', (e) => {
+  if (!e.target.classList.contains('search')) return;
+  const q = e.target.value.toLowerCase();
+  app.querySelectorAll('.item').forEach((c) => { c.hidden = !c.textContent.toLowerCase().includes(q); });
+});
+
+views.splash();
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((err) => console.warn('SW:', err));
+  });
+}
